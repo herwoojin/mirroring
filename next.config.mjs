@@ -4,8 +4,8 @@ const isProd = process.env.NODE_ENV === 'production';
 // CSP: 자체 자산 + Firebase(Auth·RTDB)·구글 로그인·TURN 허용.
 const csp = [
   "default-src 'self'",
-  // Firebase Auth 로그인 스크립트(apis.google.com/gstatic)
-  `script-src 'self' 'unsafe-inline'${isProd ? '' : " 'unsafe-eval'"} https://apis.google.com https://www.gstatic.com https://*.firebaseapp.com`,
+  // Firebase Auth 로그인 스크립트 + RTDB long-polling(웹소켓 차단 환경에서 스크립트로 우회)
+  `script-src 'self' 'unsafe-inline'${isProd ? '' : " 'unsafe-eval'"} https://apis.google.com https://www.gstatic.com https://*.firebaseapp.com https://*.firebasedatabase.app https://*.firebaseio.com`,
   "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
   // 구글 프로필 사진
   "img-src 'self' data: blob: https://*.googleusercontent.com",
