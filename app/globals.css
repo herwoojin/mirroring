@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── 초보자 퍼스트 타이포 토큰 (TRD 2.1) ─────────────────────
+   기본 크게: code 56 / title 32 / button 24 / body 20 / caption 17
+   더 크게(×1.25): 70 / 40 / 30 / 25 / 21  */
+:root,
+html[data-font-scale='base'] {
+  --fs-code: 56px;
+  --fs-title: 32px;
+  --fs-button: 24px;
+  --fs-body: 20px;
+  --fs-caption: 17px; /* 최소 크기 — 이 이하 금지 */
+}
+html[data-font-scale='large'] {
+  --fs-code: 70px;
+  --fs-title: 40px;
+  --fs-button: 30px;
+  --fs-body: 25px;
+  --fs-caption: 21px;
+}
+
+html {
+  background: #0b1220;
+  color: #f4f7fb; /* 대비 15:1 ✅ WCAG AA */
+}
+
+body {
+  font-family:
+    Pretendard,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Apple SD Gothic Neo',
+    'Noto Sans KR',
+    system-ui,
+    sans-serif;
+  line-height: 1.6;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 포커스 링 3px 고대비 (TRD 9절) */
+:focus-visible {
+  outline: 3px solid #22d3ee;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* prefers-reduced-motion 존중 (PRD 8절) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 눌림 피드백 (BigButton) */
+.pressable {
+  transition: transform 0.08s ease;
+}
+.pressable:active {
+  transform: scale(0.97);
+}
+
+/* safe-area (배터리 인디케이터 등 고정 요소) */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

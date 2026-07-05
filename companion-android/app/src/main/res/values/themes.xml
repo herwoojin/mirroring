@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 미러온 다크 팔레트 (#0B1220 / 시안 #22D3EE) — 웹과 동일 -->
+    <style name="Theme.MirrorOn" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:colorBackground">#0B1220</item>
+        <item name="colorPrimary">#22D3EE</item>
+        <item name="colorOnPrimary">#06222A</item>
+        <item name="colorSurface">#131C2E</item>
+        <item name="android:textColorPrimary">#F4F7FB</item>
+        <item name="android:statusBarColor">#0B1220</item>
+        <item name="android:navigationBarColor">#0B1220</item>
+    </style>
+</resources>

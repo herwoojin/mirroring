@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 초보자 퍼스트: 큰 글자, 큰 버튼 (웹 디자인 시스템과 동일 원칙) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    android:background="#0B1220">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/title"
+        android:textColor="#F4F7FB"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/subtitle"
+        android:textColor="#9FB0C8"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/codeInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:hint="000000"
+        android:inputType="number"
+        android:maxLength="6"
+        android:gravity="center"
+        android:letterSpacing="0.3"
+        android:textColor="#F4F7FB"
+        android:textColorHint="#4A5B78"
+        android:textSize="48sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/hostInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="@string/host_hint"
+        android:inputType="textUri"
+        android:gravity="center"
+        android:textColor="#F4F7FB"
+        android:textColorHint="#4A5B78"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/status_idle"
+        android:textColor="#9FB0C8"
+        android:textSize="20sp" />
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/startBtn"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="#22D3EE"
+        android:text="@string/start"
+        android:textColor="#06222A"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/stopBtn"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="#F87171"
+        android:text="@string/stop"
+        android:textColor="#2A0808"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+</LinearLayout>

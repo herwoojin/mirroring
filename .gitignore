@@ -1,0 +1,35 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# next.js
+.next/
+out/
+build/
+
+# env (비밀값 — Netlify 환경변수로 관리)
+.env
+.env.local
+.env*.local
+
+# 개발 인증서
+certificates/
+
+# android build 산출물
+companion-android/.gradle/
+companion-android/app/build/
+companion-android/build/
+companion-android/local.properties
+companion-android/.idea/
+*.iml
+
+# 대용량 APK — Netlify 빌드 시 Release로 관리 (레포엔 미포함)
+# public/mirroron-companion.apk  ← 배포에 필요하면 주석 해제
+
+# misc
+.DS_Store
+*.pem
+*.log
+npm-debug.log*
+scratchpad/

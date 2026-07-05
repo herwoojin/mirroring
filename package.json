@@ -1,0 +1,38 @@
+{
+  "name": "mirroron",
+  "version": "3.0.0",
+  "private": true,
+  "description": "미러온 — 초보자도 3번의 터치로 연결하는 화면 미러링 웹앱",
+  "scripts": {
+    "dev": "next dev",
+    "dev:https": "bash scripts/dev-https.sh",
+    "dev:turn": "bash scripts/dev-turn.sh",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "icons": "node scripts/generate-icons.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "@zxing/browser": "^0.1.5",
+    "@zxing/library": "^0.21.3",
+    "firebase": "^10.14.1",
+    "next": "^14.2.15",
+    "qrcode": "^1.5.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.15.12",
+    "@types/node": "^20.14.0",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "sharp": "^0.33.4",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4"
+  }
+}

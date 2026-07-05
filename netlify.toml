@@ -1,0 +1,22 @@
+# Netlify 배포 설정 — Next.js (App Router) + Firebase 시그널링
+# @netlify/plugin-nextjs가 API 라우트를 서버리스 함수로, 페이지를 CDN으로 배포한다.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# 보안 헤더 (next.config.mjs의 CSP는 그대로 유지되며, 여기선 정적 자산 캐시만)
+[[headers]]
+  for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/mirroron-companion.apk"
+  [headers.values]
+    Content-Type = "application/vnd.android.package-archive"

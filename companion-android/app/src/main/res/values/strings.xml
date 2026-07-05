@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">미러온</string>
+    <string name="title">내 화면 보여주기</string>
+    <string name="subtitle">PC 화면의 큰 숫자 6개를 눌러주세요</string>
+    <string name="host_hint">PC 주소 (예: 192.168.0.10:3000)</string>
+    <string name="start">화면 보여주기 시작</string>
+    <string name="stop">멈추기</string>
+    <string name="status_idle">준비됐어요</string>
+    <string name="status_joining">상대 기기를 찾고 있어요…</string>
+    <string name="status_connecting">연결하고 있어요…</string>
+    <string name="status_connected">연결 완료! PC에서 내 화면이 보여요</string>
+    <string name="status_error">연결이 어려워요. 다시 해볼까요?</string>
+    <string name="status_unreachable">PC를 찾지 못했어요. 주소를 확인해 주세요</string>
+    <string name="status_wrong_code">번호가 맞지 않아요. 다시 확인해 주세요</string>
+    <string name="notif_channel">화면 공유</string>
+    <string name="notif_casting">화면을 보여주는 중이에요</string>
+</resources>

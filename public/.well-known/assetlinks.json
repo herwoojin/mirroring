@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.mirroron.twa",
+      "sha256_cert_fingerprints": [
+        "/* PWABuilder로 APK 빌드 후 여기에 SHA-256 지문 입력 */"
+      ]
+    }
+  }
+]
