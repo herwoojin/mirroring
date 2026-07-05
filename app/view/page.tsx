@@ -3,7 +3,7 @@
 // view/page.tsx — 뷰어: 룸 생성 → 코드/QR 표시 → 수신 → 영상 전체 표시
 // PRD: "PC에서 보기" 역할
 import { useCallback, useEffect, useRef, useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import CodeDisplay from '@/components/CodeDisplay';
 import VideoViewer from '@/components/VideoViewer';
 import ErrorHelpCard from '@/components/ErrorHelpCard';
@@ -20,8 +20,14 @@ import AuthGate from '@/components/AuthGate';
 
 function ViewPageInner() {
   const params = useSearchParams();
+  const router = useRouter();
   const rejoinCode = params.get('code');
   const rejoinToken = params.get('token');
+
+  function goHome() {
+    sessionRef.current?.close();
+    router.push('/');
+  }
 
   const [code, setCode] = useState(rejoinCode ?? '');
   const [channelToken, setChannelToken] = useState(rejoinToken ?? '');
@@ -198,8 +204,18 @@ function ViewPageInner() {
       <div className="relative w-full h-[100dvh] bg-black">
         <VideoViewer stream={remoteStream} />
 
-        {/* 연결 상태 */}
-        <div className="absolute top-4 left-4 bg-base/80 rounded-big px-4 py-2 text-caption text-muted">
+        {/* 홈으로 (좌상단, 64px) */}
+        <button
+          type="button"
+          onClick={goHome}
+          aria-label="처음 화면으로"
+          className="pressable absolute top-4 left-4 min-w-[64px] min-h-[64px] px-4 bg-base/80 rounded-big flex items-center gap-2 text-caption text-primary"
+        >
+          <span aria-hidden="true" className="text-2xl">🏠</span> 홈
+        </button>
+
+        {/* 연결 상태 (상단 중앙) */}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-base/80 rounded-big px-4 py-2 text-caption text-muted">
           {statusCopy(status)}
         </div>
 
@@ -237,9 +253,25 @@ function ViewPageInner() {
   }
 
   // 대기: 코드/QR 표시
+  const ended = status === 'ended';
   return (
-    <div className="flex flex-col items-center justify-center min-h-[100dvh] px-6 gap-8 bg-base">
-      <h1 className="text-title text-center">{COPY.viewTitle}</h1>
+    <div className="relative flex flex-col items-center justify-center min-h-[100dvh] px-6 gap-8 bg-base">
+      {/* 홈으로 (좌상단, 64px 상시) */}
+      <button
+        type="button"
+        onClick={goHome}
+        aria-label="처음 화면으로"
+        className="pressable absolute top-4 left-4 min-w-[64px] min-h-[64px] px-4 border-2 border-line bg-surface rounded-big flex items-center gap-2 text-caption text-primary"
+      >
+        <span aria-hidden="true" className="text-2xl">🏠</span> 홈
+      </button>
+
+      <h1 className="text-title text-center">{ended ? COPY.status_ended : COPY.viewTitle}</h1>
+
+      {/* 연결이 끝났으면 홈으로 큰 버튼 */}
+      {ended && (
+        <BigButton icon="🏠" label="처음 화면으로 돌아가기" onClick={goHome} />
+      )}
 
       {/* QR 코드 */}
       {qrDataUrl && (

@@ -10,7 +10,7 @@ import RejoinButton from '@/components/RejoinButton';
 import AuthGate from '@/components/AuthGate';
 import { signOutUser, authEnabled } from '@/lib/auth';
 import { COPY } from '@/lib/copy.ko';
-import { detectCaptureSupport } from '@/lib/detect';
+import { detectCaptureSupport, detectDevice } from '@/lib/detect';
 import type { CaptureSupport } from '@/lib/detect';
 import { openSignalingChannel, pairChannelName } from '@/lib/signaling';
 import { createRoom } from '@/lib/room';
@@ -24,11 +24,14 @@ interface SavedPair {
 export default function HomePage() {
   const router = useRouter();
   const [captureSupport, setCaptureSupport] = useState<CaptureSupport>('full');
+  const [os, setOs] = useState<'android' | 'ios' | 'other'>('other');
   const [pairs, setPairs] = useState<SavedPair[]>([]);
   const [rejoinLoading, setRejoinLoading] = useState(false);
 
   useEffect(() => {
     setCaptureSupport(detectCaptureSupport());
+    const d = detectDevice().os;
+    setOs(d === 'android' ? 'android' : d === 'ios' ? 'ios' : 'other');
 
     // localStorage에서 기억된 기기 쌍 불러오기
     try {
@@ -123,9 +126,26 @@ export default function HomePage() {
 
       {/* 2대 버튼 (각 35vh) */}
       <div className="flex-1 flex flex-col gap-4 justify-center">
-        {captureSupport === 'camera-only' ? (
+        {os === 'android' ? (
           <>
-            {/* iOS: 뷰어 최상단 + 카메라 폴백 */}
+            {/* 갤럭시: 화면 미러링은 앱이 담당 → 앱 설치/열기가 최상단 */}
+            <BigButton
+              icon="📱"
+              label={COPY.homeSend}
+              tall
+              onClick={() => router.push('/app')}
+            />
+            <BigButton
+              icon="🖥️"
+              label={COPY.homeView}
+              tall
+              variant="secondary"
+              onClick={() => router.push('/view')}
+            />
+          </>
+        ) : captureSupport === 'camera-only' ? (
+          <>
+            {/* iOS: 뷰어 최상단 + 카메라 폴백 (화면 송출 불가) */}
             <BigButton
               icon="🖥️"
               label={COPY.homeView}

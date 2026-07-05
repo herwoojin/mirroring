@@ -188,6 +188,13 @@ function SendPageInner() {
         <ErrorHelpCard
           reason={error}
           onRetry={() => {
+            // 이전 카메라·연결을 확실히 정리해야 다시 잡힘 (재시도 실패 방지)
+            stopCapture(streamRef.current);
+            streamRef.current = null;
+            sessionRef.current?.close();
+            sessionRef.current = null;
+            setConnected(false);
+            setStatus('idle');
             setError(null);
             // 코드를 이미 알고 있으면 QR 재스캔 없이 [준비됐어요]부터 다시
             setStep(code && /^\d{6}$/.test(code) && error !== 'room-expired' && error !== 'wrong-code' ? 1 : 0);
