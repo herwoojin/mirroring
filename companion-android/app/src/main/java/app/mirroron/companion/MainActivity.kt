@@ -17,9 +17,18 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var codeInput: EditText
     private lateinit var hostInput: EditText
+    private lateinit var titleView: TextView
     private lateinit var statusText: TextView
     private lateinit var startBtn: Button
     private lateinit var stopBtn: Button
+
+    // 배포 주소 고정 — 초보자는 숫자 6개만 입력하면 됨.
+    private val DEFAULT_HOST = "25o.netlify.app"
+
+    private fun currentHost(): String {
+        val saved = getSharedPreferences("mirroron", Context.MODE_PRIVATE).getString("host", "")
+        return if (saved.isNullOrBlank()) DEFAULT_HOST else saved
+    }
 
     private val projectionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult(),
@@ -29,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ScreenCastService::class.java)
                 .putExtra(ScreenCastService.EXTRA_PROJECTION, data)
                 .putExtra(ScreenCastService.EXTRA_CODE, codeInput.text.toString().trim())
-                .putExtra(ScreenCastService.EXTRA_HOST, hostInput.text.toString().trim())
+                .putExtra(ScreenCastService.EXTRA_HOST, currentHost())
             startForegroundService(intent)
         }
     }
@@ -37,44 +46,36 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         CrashReporter.install(this)
-        CrashReporter.flushPending(this) // 지난번 크래시가 있으면 개발서버로 전송
         setContentView(R.layout.activity_main)
-
-        // 지난번 크래시 스택을 화면에 직접 표시 (adb 없이 원인 확보용)
-        val prefs0 = getSharedPreferences("mirroron", Context.MODE_PRIVATE)
-        prefs0.getString("last_crash_shown", null)?.let { stack ->
-            prefs0.edit().remove("last_crash_shown").apply()
-            androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("지난 오류 내용 (개발용)")
-                .setMessage(stack.take(3000))
-                .setPositiveButton("복사") { _, _ ->
-                    val cm = getSystemService(android.content.ClipboardManager::class.java)
-                    cm.setPrimaryClip(android.content.ClipData.newPlainText("crash", stack))
-                }
-                .setNegativeButton("닫기", null)
-                .show()
-        }
 
         codeInput = findViewById(R.id.codeInput)
         hostInput = findViewById(R.id.hostInput)
+        titleView = findViewById(R.id.title)
         statusText = findViewById(R.id.statusText)
         startBtn = findViewById(R.id.startBtn)
         stopBtn = findViewById(R.id.stopBtn)
 
-        // 마지막 사용 호스트 복원
-        val prefs = getSharedPreferences("mirroron", Context.MODE_PRIVATE)
-        hostInput.setText(prefs.getString("host", "") ?: "")
+        // 주소칸은 기본 숨김(고정 주소). 제목을 길게 누르면 나타남(주소 변경용 숨은 옵션).
+        hostInput.setText(currentHost())
+        titleView.setOnLongClickListener {
+            hostInput.visibility = android.view.View.VISIBLE
+            true
+        }
 
         handleDeepLink(intent)
 
         startBtn.setOnClickListener {
             val code = codeInput.text.toString().trim()
-            val host = hostInput.text.toString().trim()
-            if (code.length != 6 || host.isEmpty()) {
+            // 주소칸이 열려 있으면 그 값을 저장(변경), 아니면 고정 주소 사용
+            if (hostInput.visibility == android.view.View.VISIBLE) {
+                val h = hostInput.text.toString().trim()
+                getSharedPreferences("mirroron", Context.MODE_PRIVATE).edit()
+                    .putString("host", h.ifBlank { DEFAULT_HOST }).apply()
+            }
+            if (code.length != 6) {
                 statusText.text = getString(R.string.subtitle)
                 return@setOnClickListener
             }
-            prefs.edit().putString("host", host).apply()
             val mpm = getSystemService(MediaProjectionManager::class.java)
             projectionLauncher.launch(mpm.createScreenCaptureIntent())
         }
@@ -110,11 +111,14 @@ class MainActivity : AppCompatActivity() {
         handleDeepLink(intent)
     }
 
-    /** mirroron://send?code=123456&host=192.168.0.10:3000 */
+    /** mirroron://send?code=123456&host=25o.netlify.app */
     private fun handleDeepLink(intent: Intent?) {
         val uri = intent?.data ?: return
         if (uri.scheme != "mirroron") return
         uri.getQueryParameter("code")?.let { codeInput.setText(it) }
-        uri.getQueryParameter("host")?.let { hostInput.setText(it) }
+        // 딥링크에 host가 오면 저장(고정 주소 갱신)
+        uri.getQueryParameter("host")?.let { h ->
+            getSharedPreferences("mirroron", Context.MODE_PRIVATE).edit().putString("host", h).apply()
+        }
     }
 }

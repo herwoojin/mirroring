@@ -41,6 +41,7 @@
         android:textSize="48sp"
         android:textStyle="bold" />
 
+    <!-- 주소칸: 기본 숨김 (고정 주소). 제목 길게 누르면 나타남 -->
     <EditText
         android:id="@+id/hostInput"
         android:layout_width="match_parent"
@@ -51,7 +52,8 @@
         android:gravity="center"
         android:textColor="#F4F7FB"
         android:textColorHint="#4A5B78"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/statusText"
