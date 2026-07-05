@@ -19,7 +19,13 @@ export default function AppInstallPage() {
   }
 
   function downloadApk() {
-    window.location.href = '/mirroron-companion.apk';
+    // download 속성으로 깔끔히 저장 (모바일 브라우저에서 미리보기 시도 방지)
+    const a = document.createElement('a');
+    a.href = '/mirroron-companion.apk';
+    a.setAttribute('download', 'mirroron.apk');
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   }
 
   return (

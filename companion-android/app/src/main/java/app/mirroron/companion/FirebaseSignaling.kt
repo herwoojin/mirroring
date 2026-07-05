@@ -6,7 +6,9 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.Query
 import com.google.firebase.database.ServerValue
+import com.google.firebase.database.ValueEventListener
 import org.json.JSONObject
 import android.content.Context
 
@@ -26,10 +28,9 @@ class FirebaseSignaling(
     private val safeChannel = channel.replace(Regex("[.#$/\\[\\]]"), "_")
     private val listRef = db.getReference("signals/$safeChannel")
     private var listener: ChildEventListener? = null
+    private var attachedQuery: Query? = null
 
     fun start() {
-        // 시간 필터 없이 새 자식만 수신 — 룸은 매번 새 코드라 과거 메시지가 없음.
-        // (기기 간 시계 오차로 유효 메시지가 걸러지는 문제를 회피)
         listener = object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val msgSid = snapshot.child("sid").getValue(String::class.java)
@@ -47,7 +48,20 @@ class FirebaseSignaling(
             override fun onChildMoved(s: DataSnapshot, p: String?) {}
             override fun onCancelled(e: DatabaseError) {}
         }
-        listRef.addChildEventListener(listener!!)
+        // "구독 이후 새 메시지만" — 마지막 기존 push키 이후만 수신 (시계 무관, 과거 재생 방지)
+        listRef.limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snap: DataSnapshot) {
+                var lastKey: String? = null
+                for (c in snap.children) lastKey = c.key
+                val q: Query = if (lastKey != null) listRef.orderByKey().startAfter(lastKey) else listRef
+                attachedQuery = q
+                listener?.let { q.addChildEventListener(it) }
+            }
+            override fun onCancelled(e: DatabaseError) {
+                attachedQuery = listRef
+                listener?.let { listRef.addChildEventListener(it) }
+            }
+        })
     }
 
     fun send(msg: JSONObject) {
@@ -62,8 +76,9 @@ class FirebaseSignaling(
     }
 
     fun close() {
-        listener?.let { listRef.removeEventListener(it) }
+        listener?.let { l -> (attachedQuery ?: listRef).removeEventListener(l) }
         listener = null
+        attachedQuery = null
     }
 
     private fun snapshotToJson(snap: DataSnapshot): JSONObject {

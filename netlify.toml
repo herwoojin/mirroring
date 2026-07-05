@@ -20,3 +20,7 @@
   for = "/mirroron-companion.apk"
   [headers.values]
     Content-Type = "application/vnd.android.package-archive"
+    # 브라우저가 미리보기 대신 깔끔히 "다운로드"하도록 강제 (파일명 지정)
+    Content-Disposition = "attachment; filename=\"mirroron.apk\""
+    # 새 버전 배포 시 즉시 받도록 캐시 최소화
+    Cache-Control = "public, max-age=0, must-revalidate"
