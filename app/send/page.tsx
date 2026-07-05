@@ -159,17 +159,19 @@ function SendPageInner() {
     }
   }, [useCamera, channelToken, code, tap, markConnected]);
 
-  // 멈추기
+  // 멈추기 — 정리 중 오류가 나도 무조건 홈으로 이동
   const handleStop = useCallback(() => {
-    stopCapture(streamRef.current);
-    sessionRef.current?.close();
-    report({
-      roomId: code,
-      result: connected ? 'connected' : 'disconnected',
-      connectionType: connType,
-    });
-    router.push('/');
-  }, [code, connected, connType, report, router]);
+    try {
+      stopCapture(streamRef.current);
+      sessionRef.current?.close();
+      report({
+        roomId: code,
+        result: connected ? 'connected' : 'disconnected',
+        connectionType: connType,
+      });
+    } catch {}
+    window.location.href = '/';
+  }, [code, connected, connType, report]);
 
   // 뒤로가기
   const handleBack = useCallback(() => {

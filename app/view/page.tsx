@@ -3,7 +3,7 @@
 // view/page.tsx — 뷰어: 룸 생성 → 코드/QR 표시 → 수신 → 영상 전체 표시
 // PRD: "PC에서 보기" 역할
 import { useCallback, useEffect, useRef, useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import CodeDisplay from '@/components/CodeDisplay';
 import VideoViewer from '@/components/VideoViewer';
 import ErrorHelpCard from '@/components/ErrorHelpCard';
@@ -20,13 +20,15 @@ import AuthGate from '@/components/AuthGate';
 
 function ViewPageInner() {
   const params = useSearchParams();
-  const router = useRouter();
   const rejoinCode = params.get('code');
   const rejoinToken = params.get('token');
 
   function goHome() {
-    sessionRef.current?.close();
-    router.push('/');
+    try {
+      sessionRef.current?.close();
+    } catch {}
+    // 세션 정리 중 오류가 나도 무조건 이동 (전체 이동으로 확실하게)
+    window.location.href = '/';
   }
 
   const [code, setCode] = useState(rejoinCode ?? '');
