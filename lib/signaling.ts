@@ -13,6 +13,11 @@ import {
   push,
   onChildAdded,
   serverTimestamp,
+  get,
+  query,
+  orderByKey,
+  startAfter,
+  limitToLast,
 } from 'firebase/database';
 
 export type SignalType = 'join' | 'offer' | 'answer' | 'ice' | 'role-swap' | 'leave' | 'pair-invite';
@@ -150,16 +155,29 @@ function createFirebaseChannel(channelName: string): SignalingChannel {
   const listRef = ref(db, `signals/${safeName}`);
   let handler: Handler | null = null;
   let unsub: (() => void) | null = null;
+  let closed = false;
 
-  // 시간 필터 없이 새 자식만 수신 — 룸은 매번 새 코드라 과거 메시지가 없음.
-  // (기기 간 시계 오차로 유효 메시지가 걸러지는 문제를 회피)
-  unsub = onChildAdded(listRef, (snap) => {
+  // "구독 시점 이후 새 메시지만" — push키가 시간순이라 마지막 기존 키 이후만 수신.
+  // (시계 오차와 무관하고, 재사용 채널(pair)의 과거 초대 재생도 막음)
+  const emit = (snap: any) => {
     const v = snap.val();
     if (!v || v.sid === sid) return; // 자기 메시지 무시
-    if (handler) {
-      void handler({ type: v.type, from: v.from, to: v.to, payload: v.payload ?? {} });
-    }
-  });
+    if (handler) void handler({ type: v.type, from: v.from, to: v.to, payload: v.payload ?? {} });
+  };
+
+  get(query(listRef, limitToLast(1)))
+    .then((snap) => {
+      if (closed) return;
+      let lastKey: string | null = null;
+      snap.forEach((c) => {
+        lastKey = c.key;
+      });
+      const q = lastKey ? query(listRef, orderByKey(), startAfter(lastKey)) : listRef;
+      unsub = onChildAdded(q, emit);
+    })
+    .catch(() => {
+      if (!closed) unsub = onChildAdded(listRef, emit);
+    });
 
   return {
     channelName,
@@ -177,6 +195,7 @@ function createFirebaseChannel(channelName: string): SignalingChannel {
       handler = h;
     },
     close() {
+      closed = true;
       handler = null;
       unsub?.();
     },
