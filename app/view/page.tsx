@@ -23,13 +23,6 @@ function ViewPageInner() {
   const rejoinCode = params.get('code');
   const rejoinToken = params.get('token');
 
-  function goHome() {
-    try {
-      sessionRef.current?.close();
-    } catch {}
-    // 세션 정리 중 오류가 나도 무조건 이동 (전체 이동으로 확실하게)
-    window.location.href = '/';
-  }
 
   const [code, setCode] = useState(rejoinCode ?? '');
   const [channelToken, setChannelToken] = useState(rejoinToken ?? '');
@@ -206,15 +199,15 @@ function ViewPageInner() {
       <div className="relative w-full h-[100dvh] bg-black">
         <VideoViewer stream={remoteStream} />
 
-        {/* 홈으로 (좌상단, 64px) */}
-        <button
-          type="button"
-          onClick={goHome}
+        {/* 홈으로 (좌상단, 64px) — 링크라 어떤 상태에서도 이동 보장 */}
+        <a
+          href="/"
+          onClick={() => { try { sessionRef.current?.close(); } catch {} }}
           aria-label="처음 화면으로"
-          className="pressable absolute top-4 left-4 min-w-[64px] min-h-[64px] px-4 bg-base/80 rounded-big flex items-center gap-2 text-caption text-primary"
+          className="pressable absolute top-4 left-4 min-w-[64px] min-h-[64px] px-4 bg-base/80 rounded-big flex items-center gap-2 text-caption text-primary no-underline z-10"
         >
           <span aria-hidden="true" className="text-2xl">🏠</span> 홈
-        </button>
+        </a>
 
         {/* 연결 상태 (상단 중앙) */}
         <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-base/80 rounded-big px-4 py-2 text-caption text-muted">
@@ -258,21 +251,28 @@ function ViewPageInner() {
   const ended = status === 'ended';
   return (
     <div className="relative flex flex-col items-center justify-center min-h-[100dvh] px-6 gap-8 bg-base">
-      {/* 홈으로 (좌상단, 64px 상시) */}
-      <button
-        type="button"
-        onClick={goHome}
+      {/* 홈으로 (좌상단, 64px 상시) — 링크라 어떤 상태에서도 이동 보장 */}
+      <a
+        href="/"
+        onClick={() => { try { sessionRef.current?.close(); } catch {} }}
         aria-label="처음 화면으로"
-        className="pressable absolute top-4 left-4 min-w-[64px] min-h-[64px] px-4 border-2 border-line bg-surface rounded-big flex items-center gap-2 text-caption text-primary"
+        className="pressable absolute top-4 left-4 min-w-[64px] min-h-[64px] px-4 border-2 border-line bg-surface rounded-big flex items-center gap-2 text-caption text-primary no-underline"
       >
         <span aria-hidden="true" className="text-2xl">🏠</span> 홈
-      </button>
+      </a>
 
       <h1 className="text-title text-center">{ended ? COPY.status_ended : COPY.viewTitle}</h1>
 
-      {/* 연결이 끝났으면 홈으로 큰 버튼 */}
+      {/* 연결이 끝났으면 홈으로 큰 링크 버튼 */}
       {ended && (
-        <BigButton icon="🏠" label="처음 화면으로 돌아가기" onClick={goHome} />
+        <a
+          href="/"
+          onClick={() => { try { sessionRef.current?.close(); } catch {} }}
+          className="pressable w-full rounded-big px-6 min-h-[88px] flex flex-col items-center justify-center gap-2 bg-accent text-accent-ink no-underline"
+        >
+          <span aria-hidden="true" className="text-4xl">🏠</span>
+          <span className="text-button">처음 화면으로 돌아가기</span>
+        </a>
       )}
 
       {/* QR 코드 */}
