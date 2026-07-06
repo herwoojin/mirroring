@@ -124,56 +124,63 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* 2대 버튼 (각 35vh) */}
+      {/* 행동 버튼 — 방향(무엇을 어디로)을 제목에 명확히 */}
       <div className="flex-1 flex flex-col gap-4 justify-center">
         {os === 'android' ? (
           <>
-            {/* 갤럭시: 화면 미러링은 앱이 담당 → 앱 설치/열기가 최상단 */}
+            {/* 갤럭시: 화면 미러링은 앱이 담당 */}
             <BigButton
               icon="📱"
-              label={COPY.homeSend}
+              label={COPY.homeSendScreen}
+              sub="앱으로 폰 화면을 통째로"
               tall
               onClick={() => router.push('/app')}
             />
             <BigButton
+              icon="📷"
+              label={COPY.homeSendCameraClear}
+              sub="폰 카메라로 비추기"
+              variant="secondary"
+              onClick={() => router.push('/camera')}
+            />
+            <BigButton
               icon="🖥️"
-              label={COPY.homeView}
-              tall
+              label={COPY.homeViewClear}
               variant="secondary"
               onClick={() => router.push('/view')}
             />
           </>
         ) : captureSupport === 'camera-only' ? (
           <>
-            {/* iOS: 뷰어 최상단 + 카메라 폴백 (화면 송출 불가) */}
+            {/* iOS: 화면 송출 불가 → 보기 + 카메라 */}
             <BigButton
               icon="🖥️"
-              label={COPY.homeView}
+              label={COPY.homeViewClear}
               tall
               onClick={() => router.push('/view')}
             />
             <BigButton
               icon="📷"
-              label={COPY.homeSendCamera}
-              tall
+              label={COPY.homeSendCameraClear}
+              sub="폰 카메라로 비추기"
               variant="secondary"
-              onClick={() => router.push('/send?camera=1')}
+              onClick={() => router.push('/camera')}
             />
           </>
         ) : (
           <>
-            <BigButton
-              icon="📱"
-              label={COPY.homeSend}
-              tall
-              onClick={() => router.push('/send')}
-            />
+            {/* PC: 보기가 기본, 이 컴퓨터 화면 보내기도 가능 */}
             <BigButton
               icon="🖥️"
-              label={COPY.homeView}
+              label={COPY.homeViewClear}
               tall
-              variant="secondary"
               onClick={() => router.push('/view')}
+            />
+            <BigButton
+              icon="💻"
+              label={COPY.homePcShare}
+              variant="secondary"
+              onClick={() => router.push('/send')}
             />
           </>
         )}

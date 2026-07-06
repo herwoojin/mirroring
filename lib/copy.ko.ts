@@ -7,11 +7,16 @@ export const COPY = {
   appName: '미러온',
   appTagline: '화면을 서로 보여주는 앱이에요',
 
-  // 첫 화면
+  // 첫 화면 (방향·방법을 제목에 명확히)
   homeSend: '내 화면 보여주기',
   homeView: '다른 기기 화면 보기',
   homeSendCamera: '카메라로 보여주기',
   homeGuideLink: '사용 방법 그림으로 보기',
+  // v3.2 직관적 라벨
+  homeViewClear: '휴대폰 화면을 여기(PC)서 보기',
+  homeSendScreen: '내 폰 화면을 PC로 보내기',
+  homeSendCameraClear: '내 폰 카메라를 PC로 보내기',
+  homePcShare: '이 컴퓨터 화면을 보내기',
   fontScaleBase: '기본 크기',
   fontScaleLarge: '더 크게',
   fontScaleToggleAria: '글자 크기 바꾸기',

@@ -103,7 +103,7 @@ export default function AppInstallPage() {
           icon="📷"
           label="카메라로 보여주기"
           variant="secondary"
-          onClick={() => router.push('/send?camera=1')}
+          onClick={() => router.push('/camera')}
         />
       </div>
 
