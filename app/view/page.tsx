@@ -17,6 +17,7 @@ import { useConnectionMetrics } from '@/lib/useConnectionMetrics';
 import { deviceHint } from '@/lib/detect';
 import { createRoom } from '@/lib/room';
 import AuthGate from '@/components/AuthGate';
+import PinchZoom from '@/components/PinchZoom';
 
 function ViewPageInner() {
   const params = useSearchParams();
@@ -219,7 +220,10 @@ function ViewPageInner() {
     return (
       // fixed inset-0: 부모·dvh 계산과 무관하게 화면 전체를 확실히 채움
       <div ref={stageRef} className="fixed inset-0 bg-black">
-        <VideoViewer stream={remoteStream} />
+        {/* 두 손가락으로 확대·이동, 더블탭으로 원래대로 */}
+        <PinchZoom>
+          <VideoViewer stream={remoteStream} />
+        </PinchZoom>
 
         {/* 홈으로 (좌상단, 64px) — 링크라 어떤 상태에서도 이동 보장 */}
         <a
@@ -244,6 +248,11 @@ function ViewPageInner() {
         {/* 연결 상태 (상단 중앙) */}
         <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-base/80 rounded-big px-4 py-2 text-caption text-muted z-10">
           {statusCopy(status)}
+        </div>
+
+        {/* 확대 안내 (하단 중앙, 작게) */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-base/70 rounded-big px-4 py-2 text-caption text-muted z-10 pointer-events-none">
+          두 손가락으로 크게 · 더블탭으로 원래대로
         </div>
 
         {/* 교육 모드 진입 (우하단 작게) */}
