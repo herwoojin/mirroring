@@ -35,7 +35,28 @@ function ViewPageInner() {
 
   const sessionRef = useRef<PeerSession | null>(null);
   const roomCreatedRef = useRef(false);
+  const stageRef = useRef<HTMLDivElement>(null);
   const { tap, markConnected, report } = useConnectionMetrics();
+
+  // 전체화면 토글 (브라우저 표시줄까지 숨겨 완전히 꽉 차게 + 가로 고정 시도)
+  async function toggleFullscreen() {
+    const el = stageRef.current;
+    if (!el) return;
+    try {
+      if (!document.fullscreenElement) {
+        await el.requestFullscreen();
+        // 지원 기기에서 가로 고정 (PC 화면은 가로가 자연스러움)
+        try {
+          await (screen.orientation as any)?.lock?.('landscape');
+        } catch {}
+      } else {
+        try {
+          (screen.orientation as any)?.unlock?.();
+        } catch {}
+        await document.exitFullscreen();
+      }
+    } catch {}
+  }
 
   // 룸 생성 (StrictMode 이중 실행 방지)
   useEffect(() => {
@@ -196,7 +217,8 @@ function ViewPageInner() {
   // 영상 수신 중
   if (remoteStream) {
     return (
-      <div className="relative w-full h-[100dvh] bg-black">
+      // fixed inset-0: 부모·dvh 계산과 무관하게 화면 전체를 확실히 채움
+      <div ref={stageRef} className="fixed inset-0 bg-black">
         <VideoViewer stream={remoteStream} />
 
         {/* 홈으로 (좌상단, 64px) — 링크라 어떤 상태에서도 이동 보장 */}
@@ -204,20 +226,30 @@ function ViewPageInner() {
           href="/"
           onClick={() => { try { sessionRef.current?.close(); } catch {} }}
           aria-label="처음 화면으로"
-          className="pressable absolute top-4 left-4 min-w-[64px] min-h-[64px] px-4 bg-base/80 rounded-big flex items-center gap-2 text-caption text-primary no-underline z-10"
+          className="pressable absolute top-3 left-3 min-w-[64px] min-h-[64px] px-4 bg-base/80 rounded-big flex items-center gap-2 text-caption text-primary no-underline z-10"
         >
           <span aria-hidden="true" className="text-2xl">🏠</span> 홈
         </a>
 
+        {/* 전체화면 (우상단) — 브라우저 표시줄까지 숨겨 완전히 꽉 차게 */}
+        <button
+          type="button"
+          onClick={toggleFullscreen}
+          aria-label="전체화면"
+          className="pressable absolute top-3 right-3 min-w-[64px] min-h-[64px] px-4 bg-base/80 rounded-big flex items-center gap-2 text-caption text-primary z-10"
+        >
+          <span aria-hidden="true" className="text-2xl">⛶</span> 크게
+        </button>
+
         {/* 연결 상태 (상단 중앙) */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-base/80 rounded-big px-4 py-2 text-caption text-muted">
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-base/80 rounded-big px-4 py-2 text-caption text-muted z-10">
           {statusCopy(status)}
         </div>
 
         {/* 교육 모드 진입 (우하단 작게) */}
         <a
           href="/admin"
-          className="absolute bottom-4 right-4 w-12 h-12 bg-surface/80 rounded-full flex items-center justify-center text-xl"
+          className="absolute bottom-4 right-4 w-12 h-12 bg-surface/80 rounded-full flex items-center justify-center text-xl z-10"
           aria-label={COPY.adminTitle}
         >
           🎓
