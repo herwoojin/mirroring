@@ -222,7 +222,7 @@ function ViewPageInner() {
       <div ref={stageRef} className="fixed inset-0 bg-black">
         {/* 두 손가락으로 확대·이동, 더블탭으로 원래대로 */}
         <PinchZoom>
-          <VideoViewer stream={remoteStream} />
+          <VideoViewer stream={remoteStream} className="absolute inset-0" />
         </PinchZoom>
 
         {/* 홈으로 (좌상단, 64px) — 링크라 어떤 상태에서도 이동 보장 */}

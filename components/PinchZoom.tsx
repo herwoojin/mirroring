@@ -114,15 +114,16 @@ export default function PinchZoom({ children }: { children: ReactNode }) {
   }, []);
 
   return (
+    // absolute inset-0: 부모(고정 컨테이너)를 확실히 꽉 채움 (percentage 높이 미해결 회피)
     <div
       ref={wrapRef}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
-      className="w-full h-full overflow-hidden"
+      className="absolute inset-0 overflow-hidden"
       style={{ touchAction: 'none' }}
     >
-      <div ref={contentRef} className="w-full h-full origin-center will-change-transform">
+      <div ref={contentRef} className="absolute inset-0 origin-center will-change-transform">
         {children}
       </div>
     </div>
