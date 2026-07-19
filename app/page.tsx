@@ -132,7 +132,7 @@ export default function HomePage() {
             <BigButton
               icon="📱"
               label={COPY.homeSendScreen}
-              sub="앱으로 폰 화면을 통째로"
+              sub="미러온 설치후 암호숫자 넣기"
               tall
               onClick={() => router.push('/app')}
             />

@@ -13,9 +13,9 @@ export const COPY = {
   homeSendCamera: '카메라로 보여주기',
   homeGuideLink: '사용 방법 그림으로 보기',
   // v3.2 직관적 라벨
-  homeViewClear: '휴대폰 화면을 여기(PC)서 보기',
-  homeSendScreen: '내 폰 화면을 PC로 보내기',
-  homeSendCameraClear: '내 폰 카메라를 PC로 보내기',
+  homeViewClear: '다른 화면 불러오기(암호숫자 보여주기)',
+  homeSendScreen: '미러온 설치후, 내화면 보여주기(암호숫자 넣기)',
+  homeSendCameraClear: '내 화면 보여주기(암호숫자 넣기)',
   homePcShare: '이 컴퓨터 화면을 보내기',
   fontScaleBase: '기본 크기',
   fontScaleLarge: '더 크게',
